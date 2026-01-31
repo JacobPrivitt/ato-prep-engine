@@ -1,14 +1,11 @@
-from models.system_profile import SystemProfile
+from cli.questionnaire import run_questionnaire
 from logic.stig_selector import select_stigs
 
 
 def main():
-    profile = SystemProfile()
-    profile.uses_windows = True
-    profile.uses_web_server = True
-    profile.processes_cui = True
+    profile = run_questionnaire()
 
-    print("System Profile:")
+    print("\nSystem Profile Summary:")
     print(profile.summary())
 
     stigs = select_stigs(profile)

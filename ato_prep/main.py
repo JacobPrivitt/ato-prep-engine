@@ -7,6 +7,8 @@ from logic.artifact_mapper import (
 )
 from output.exporter import export_package_json, load_package_json, save_package_json
 from output.viewer import display_loaded_package
+from logic.readiness_report import print_readiness_report
+
 
 
 def ask_choice(prompt: str, choices):
@@ -90,11 +92,13 @@ def run_load_package_flow():
 
         print("\nOptions:")
         print("1) Attach a file to an artifact")
-        print("2) Save package")
-        print("3) Save package as (new file)")
-        print("4) Exit")
+        print("2) Readiness report")
+        print("3) Save package")
+        print("4) Save package as (new file)")
+        print("5) Exit")
 
-        choice = ask_choice("Choose 1-4: ", choices=["1", "2", "3", "4"])
+
+        choice = ask_choice("Choose 1-5: ", choices=["1", "2", "3", "4", "5"])
 
         if choice == "1":
             artifact_id = input("Enter artifact_id (example: SSP): ").strip()
@@ -107,10 +111,14 @@ def run_load_package_flow():
                 print(f"Artifact ID not found: {artifact_id}")
 
         elif choice == "2":
-            save_package_json(path, pkg)
-            print(f"Saved: {path}")
+            # Readiness report
+            print_readiness_report(pkg, top_missing=10)
 
         elif choice == "3":
+            save_package_json(path, pkg)
+            print(f"Saved: {path}")
+            
+        elif choice == "4":
             new_path = input("Enter new file path (example: exports\\package_updated.json): ").strip().strip('"')
             save_package_json(new_path, pkg)
             print(f"Saved: {new_path}")

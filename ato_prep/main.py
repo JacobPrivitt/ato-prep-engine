@@ -5,7 +5,7 @@ from logic.artifact_mapper import (
     controls_covered_by_artifacts,
     list_controls_missing_evidence,
 )
-from output.exporter import export_package_json, load_package_json
+from output.exporter import export_package_json, load_package_json, save_package_json
 from output.viewer import display_loaded_package
 
 
@@ -68,10 +68,56 @@ def run_new_package_flow():
     print(f"\nExported JSON package to: {export_path}")
 
 
+from logic.attachments import (
+    attach_artifact_file,
+    artifact_attachment_status,
+    covered_controls_from_attached_artifacts,
+)
+
+
 def run_load_package_flow():
     path = input("\nEnter path to package JSON (example: exports\\package_20260131_123000.json): ").strip().strip('"')
     pkg = load_package_json(path)
-    display_loaded_package(pkg)
+
+    while True:
+        display_loaded_package(pkg)
+
+        attached, total = artifact_attachment_status(pkg)
+        print(f"\nAttachment Progress: {attached}/{total} artifacts have files attached.")
+
+        evidence_coverage = covered_controls_from_attached_artifacts(pkg)
+        print(f"Controls with evidence attached: {len(evidence_coverage)}")
+
+        print("\nOptions:")
+        print("1) Attach a file to an artifact")
+        print("2) Save package")
+        print("3) Save package as (new file)")
+        print("4) Exit")
+
+        choice = ask_choice("Choose 1-4: ", choices=["1", "2", "3", "4"])
+
+        if choice == "1":
+            artifact_id = input("Enter artifact_id (example: SSP): ").strip()
+            file_path = input("Enter file path to attach: ").strip().strip('"')
+
+            updated = attach_artifact_file(pkg, artifact_id, file_path)
+            if updated:
+                print(f"Attached file to {artifact_id}.")
+            else:
+                print(f"Artifact ID not found: {artifact_id}")
+
+        elif choice == "2":
+            save_package_json(path, pkg)
+            print(f"Saved: {path}")
+
+        elif choice == "3":
+            new_path = input("Enter new file path (example: exports\\package_updated.json): ").strip().strip('"')
+            save_package_json(new_path, pkg)
+            print(f"Saved: {new_path}")
+
+        else:
+            break
+
 
 
 def main():

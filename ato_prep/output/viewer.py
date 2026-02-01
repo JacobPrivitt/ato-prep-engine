@@ -33,17 +33,26 @@ def display_loaded_package(pkg: Dict[str, Any]) -> None:
             aid = a.get("artifact_id", "UNKNOWN")
             name = a.get("name", "Unnamed Artifact")
             reasons = a.get("required_reasons", [])
+            attached_file = a.get("attached_file", "")
+
             print(f"\n[{aid}] {name}")
             if reasons:
                 print("Reason: " + ", ".join(reasons))
             desc = a.get("description", "")
             if desc:
                 print(f"Description: {desc}")
+
+            if attached_file:
+                print(f"Attached file: {attached_file}")
+            else:
+                print("Attached file: (none)")
+
             supports = a.get("supports_controls", [])
             if supports:
                 print("Supports controls: " + ", ".join(supports))
     else:
         print("(none)")
+
 
     coverage = pkg.get("control_coverage", {})
     print("\nControl Coverage Summary:")

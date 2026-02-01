@@ -5,6 +5,7 @@ from logic.artifact_mapper import (
     controls_covered_by_artifacts,
     list_controls_missing_evidence,
 )
+from output.exporter import export_package_json
 
 
 def main():
@@ -43,6 +44,18 @@ def main():
             print(f"- {ctrl_id}")
     else:
         print("\nAll controls have at least one supporting artifact.")
+
+    export_path = export_package_json(
+        export_dir="exports",
+        profile=profile,
+        stigs=stigs,
+        required_artifacts=required_artifacts,
+        reasons=reasons,
+        coverage=coverage,
+        missing_controls=missing,
+    )
+
+    print(f"\nExported JSON package to: {export_path}")
 
 
 if __name__ == "__main__":

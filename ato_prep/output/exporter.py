@@ -60,3 +60,10 @@ def export_package_json(
         json.dump(data, f, indent=2)
 
     return path
+
+def load_package_json(path: str) -> Dict[str, Any]:
+    """
+    Loads a previously exported JSON package and returns the raw dict.
+    """
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)

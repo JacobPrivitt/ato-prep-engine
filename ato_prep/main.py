@@ -5,10 +5,20 @@ from logic.artifact_mapper import (
     controls_covered_by_artifacts,
     list_controls_missing_evidence,
 )
-from output.exporter import export_package_json
+from output.exporter import export_package_json, load_package_json
+from output.viewer import display_loaded_package
 
 
-def main():
+def ask_choice(prompt: str, choices):
+    choices_set = set(str(c) for c in choices)
+    while True:
+        answer = input(prompt).strip()
+        if answer in choices_set:
+            return answer
+        print(f"Please choose one of: {', '.join(sorted(choices_set))}")
+
+
+def run_new_package_flow():
     profile = run_questionnaire()
 
     print("\nSystem Profile Summary:")
@@ -56,6 +66,24 @@ def main():
     )
 
     print(f"\nExported JSON package to: {export_path}")
+
+
+def run_load_package_flow():
+    path = input("\nEnter path to package JSON (example: exports\\package_20260131_123000.json): ").strip().strip('"')
+    pkg = load_package_json(path)
+    display_loaded_package(pkg)
+
+
+def main():
+    print("=== ATO Prep Engine ===")
+    print("1) Create new package")
+    print("2) Load existing package JSON")
+
+    choice = ask_choice("Choose 1 or 2: ", choices=["1", "2"])
+    if choice == "1":
+        run_new_package_flow()
+    else:
+        run_load_package_flow()
 
 
 if __name__ == "__main__":

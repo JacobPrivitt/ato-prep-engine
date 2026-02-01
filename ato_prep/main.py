@@ -8,6 +8,7 @@ from logic.artifact_mapper import (
 from output.exporter import export_package_json, load_package_json, save_package_json
 from output.viewer import display_loaded_package
 from logic.readiness_report import print_readiness_report
+from logic.migrate import refresh_artifact_mappings
 
 
 
@@ -92,13 +93,14 @@ def run_load_package_flow():
 
         print("\nOptions:")
         print("1) Attach a file to an artifact")
-        print("2) Readiness report")
-        print("3) Save package")
-        print("4) Save package as (new file)")
-        print("5) Exit")
+        print("2) Refresh artifact mappings (apply latest control mappings)")
+        print("3) Readiness report")
+        print("4) Save package")
+        print("5) Save package as (new file)")
+        print("6) Exit")
 
+        choice = ask_choice("Choose 1-6: ", choices=["1", "2", "3", "4", "5", "6"])
 
-        choice = ask_choice("Choose 1-5: ", choices=["1", "2", "3", "4", "5"])
 
         if choice == "1":
             artifact_id = input("Enter artifact_id (example: SSP): ").strip()
@@ -111,22 +113,23 @@ def run_load_package_flow():
                 print(f"Artifact ID not found: {artifact_id}")
 
         elif choice == "2":
-            # Readiness report
-            print_readiness_report(pkg, top_missing=10)
+            count = refresh_artifact_mappings(pkg)
+            print(f"Refreshed mappings for {count} artifacts.")
 
         elif choice == "3":
+            print_readiness_report(pkg, top_missing=10)
+
+        elif choice == "4":
             save_package_json(path, pkg)
             print(f"Saved: {path}")
-            
-        elif choice == "4":
+
+        elif choice == "5":
             new_path = input("Enter new file path (example: exports\\package_updated.json): ").strip().strip('"')
             save_package_json(new_path, pkg)
             print(f"Saved: {new_path}")
 
         else:
             break
-
-
 
 def main():
     print("=== ATO Prep Engine ===")

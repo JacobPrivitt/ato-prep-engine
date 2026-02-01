@@ -100,28 +100,29 @@ def build_artifact_catalog() -> Dict[str, Artifact]:
             artifact_id="WINDOWS_STIG_RESULTS",
             name="Windows STIG Results",
             description="STIG checklist or tool output for Windows components in scope.",
-            supports_controls=[],
+            # Map to existing catalog controls only (keeps readiness denominator stable)
+            supports_controls=["CM-2", "CM-6", "AC-2", "AC-6", "RA-5"],
             required_when=["uses_windows"],
         ),
         Artifact(
             artifact_id="LINUX_STIG_RESULTS",
             name="Linux STIG Results",
             description="STIG checklist or tool output for Linux components in scope.",
-            supports_controls=[],
+            supports_controls=["CM-2", "CM-6", "AC-2", "AC-6", "RA-5"],
             required_when=["uses_linux"],
         ),
         Artifact(
             artifact_id="WEB_STIG_RESULTS",
             name="Web Server STIG Results",
             description="STIG checklist or hardening evidence for the web server stack.",
-            supports_controls=[],
+            supports_controls=["CM-6", "SC-7", "RA-5"],
             required_when=["uses_web_server"],
         ),
         Artifact(
             artifact_id="DB_STIG_RESULTS",
             name="Database STIG Results",
             description="STIG checklist or hardening evidence for the database stack.",
-            supports_controls=[],
+            supports_controls=["CM-6", "AC-2", "AC-6", "RA-5"],
             required_when=["uses_database"],
         ),
     ]
